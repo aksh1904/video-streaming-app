@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5002';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://video-streaming-app-production-1f47.up.railway.app';
 
 class SocketService {
   constructor() {
