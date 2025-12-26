@@ -17,16 +17,41 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-  },
+    origin: [
+      "http://localhost:5173",
+      "https://video-streaming-app-akshat-sharmas-projects-8623bc36.vercel.app",
+      "https://video-streaming-app-git-main-akshat-sharmas-projects-8623bc36.vercel.app"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
 
 // Middleware
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://video-streaming-app-akshat-sharmas-projects-8623bc36.vercel.app",
+  "https://video-streaming-app-git-main-akshat-sharmas-projects-8623bc36.vercel.app"
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // allow server-to-server, Postman, curl
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// REQUIRED for browser POST requests
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
